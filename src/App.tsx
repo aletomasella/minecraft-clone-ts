@@ -2,13 +2,20 @@ import React from "react";
 import { Canvas } from "@react-three/fiber";
 import { Sky } from "@react-three/drei";
 import { setSunPosition } from "./utilities";
+import { Physics } from "@react-three/cannon";
+import { Ground, Player } from "./components";
 
 const App = () => {
-  const sunPosition = setSunPosition(100, 100, 20);
+  const sunPosition = setSunPosition(120, 120, 40);
   return (
     <>
       <Canvas>
-        <Sky sunPosition={[100, 100, 20]} />
+        <Sky sunPosition={sunPosition} />
+        <ambientLight intensity={0.5} />
+        <Physics>
+          <Ground />
+          <Player />
+        </Physics>
       </Canvas>
     </>
   );
