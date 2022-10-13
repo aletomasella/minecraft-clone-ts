@@ -14,7 +14,6 @@ const actionByKey = (key: string): string | undefined => {
     Digit4: "wood",
     Digit5: "log",
   };
-
   return actions[key as keyof Actions];
 };
 

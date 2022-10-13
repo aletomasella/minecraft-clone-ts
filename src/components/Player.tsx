@@ -4,11 +4,12 @@ import React, { useEffect, useRef } from "react";
 import { Vector3 } from "three";
 import { useKeyboard } from "../hooks";
 
-const JUMP_VELOCITY = 5;
+const JUMP_VELOCITY = 4;
+const SPEED = 4;
 
 const Player = () => {
   const { camera } = useThree();
-  const { jump, foward, backward, left, rigth } = useKeyboard();
+  const { jump, foward, backward, left, right } = useKeyboard();
   const [ref, api] = useSphere(() => ({
     mass: 1,
     type: "Dynamic",
@@ -29,24 +30,26 @@ const Player = () => {
   useFrame(() => {
     camera.position.copy(new Vector3(...pos.current));
 
+    const direction = new Vector3();
+
+    const frontVector = new Vector3(
+      0,
+      0,
+      (foward ? -1 : 0) + (backward ? 1 : 0)
+    );
+
+    const sideVector = new Vector3((right ? -1 : 0) + (left ? 1 : 0), 0, 0);
+
+    direction
+      .subVectors(frontVector, sideVector)
+      .normalize()
+      .multiplyScalar(SPEED)
+      .applyEuler(camera.rotation);
+
+    api.velocity.set(direction.x, vel.current[1], direction.z);
+
     if (jump && Math.abs(vel.current[1]) < 0.05) {
       api.velocity.set(vel.current[0], JUMP_VELOCITY, vel.current[2]);
-    }
-
-    if (foward) {
-      api.velocity.set(vel.current[0], vel.current[1], vel.current[2] + 0.5);
-    }
-
-    if (backward) {
-      api.velocity.set(vel.current[0], vel.current[1], vel.current[2] - 0.5);
-    }
-
-    if (left) {
-      api.velocity.set(vel.current[0] - 0.5, vel.current[1], vel.current[2]);
-    }
-
-    if (rigth) {
-      api.velocity.set(vel.current[0] + 0.5, vel.current[1], vel.current[2]);
     }
   });
 
