@@ -2,6 +2,18 @@ import create from "zustand";
 import { Cube } from "../models";
 import { nanoid } from "nanoid";
 
+const getLocalStorage = (key: string) => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : undefined;
+};
+const setLocalStorage = (key: string, value: any) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
+const cleanLocalStorage = (key: string) => {
+  localStorage.removeItem(key);
+};
+
 interface Store {
   cubes: Cube[];
   addCube: (x: number, y: number, z: number) => void;
@@ -14,7 +26,7 @@ interface Store {
 
 export const useStore = create<Store>((set) => ({
   texture: "dirt",
-  cubes: [],
+  cubes: getLocalStorage("cubes") || [],
   addCube: (x, y, z) => {
     set((state) => ({
       cubes: [
@@ -27,7 +39,11 @@ export const useStore = create<Store>((set) => ({
       ],
     }));
   },
-  setTexture: () => {},
+  setTexture: (texture) => {
+    set((state) => ({
+      texture,
+    }));
+  },
   removeCube: (x, y, z) => {
     console.log("remove cube", x, y, z);
     set((state) => ({
@@ -39,6 +55,16 @@ export const useStore = create<Store>((set) => ({
       ),
     }));
   },
-  saveWorld: () => {},
-  resetWorld: () => {},
+  saveWorld: () => {
+    set((state) => {
+      setLocalStorage("cubes", state.cubes);
+      return state;
+    });
+  },
+  resetWorld: () => {
+    set((state) => ({
+      cubes: [],
+    }));
+    cleanLocalStorage("cubes");
+  },
 }));

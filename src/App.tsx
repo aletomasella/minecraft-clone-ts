@@ -3,7 +3,14 @@ import { Canvas } from "@react-three/fiber";
 import { Sky } from "@react-three/drei";
 import { setSunPosition } from "./utilities";
 import { Physics } from "@react-three/cannon";
-import { Cubes, FPV, Ground, Player } from "./components";
+import {
+  Cubes,
+  FPV,
+  Ground,
+  Menu,
+  Player,
+  TextureSelector,
+} from "./components";
 
 const App = () => {
   const sunPosition = setSunPosition(120, 120, 40);
@@ -21,6 +28,8 @@ const App = () => {
         </Physics>
       </Canvas>
       <div className={cursorStyle}>+</div>
+      <TextureSelector />
+      <Menu />
     </>
   );
 };
